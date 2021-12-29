@@ -9,15 +9,15 @@ public class course {
 		int hor = 0;
 		int depth = 0;
 		int aim = 0;
-		for(String s : commands) {
-			String[] com = s.split(" ");
-			if(com[0].equals("forward")) {
-				hor += Integer.parseInt(com[1]);
-				depth += aim*Integer.parseInt(com[1]);
-			} else if(com[0].equals("down")){
-				aim += Integer.parseInt(com[1]);
-			} else if(com[0].equals("up")) {
-				aim -= Integer.parseInt(com[1]);
+		for(String command : commands) {
+			String[] split = command.split(" ");
+			if(split[0].equals("forward")) {
+				hor += Integer.parseInt(split[1]);
+				depth += aim*Integer.parseInt(split[1]);
+			} else if(split[0].equals("down")){
+				aim += Integer.parseInt(split[1]);
+			} else if(split[0].equals("up")) {
+				aim -= Integer.parseInt(split[1]);
 			}
 		}
 		System.out.println(hor*depth);

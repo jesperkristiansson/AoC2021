@@ -8,13 +8,13 @@ import java.io.IOException;
 public class createFiles {
 
 	public static void main(String[] args) {
-		for(int i = 11; i <= 25; i++) {
+		for(int i = 1; i <= 5; i++) {
 			String path = "src/day" + i;
 			File dir = new File(path);
 			File example = new File(path + "/example.txt");
 			File input = new File(path + "/input.txt");
 			try{
-		        BufferedWriter bwin = new BufferedWriter(new FileWriter(input.getAbsoluteFile()));
+		        BufferedWriter bwin = new BufferedWriter(new FileWriter(example.getAbsoluteFile()));
 		        bwin.write("");
 		        bwin.close();
 		    }

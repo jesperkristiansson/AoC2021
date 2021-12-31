@@ -1,22 +1,22 @@
 package day23;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 
 public class Burrow {
-	private static int debug = 0;
-	private Stack<Amphipod>[] rooms = new Stack[4];
-	private Amphipod[] hallway = new Amphipod[11];
-	private List<Integer> roomCol = Arrays.asList(2, 4, 6, 8);
-	private final int roomSize = 2;
-	private Map<Integer, Character> roomChar = Map.of(0, 'A', 1, 'B', 2, 'C', 3, 'D');
-	private Map<Character, Integer> amphipodCost = Map.of('A', 1, 'B', 10, 'C', 100, 'D', 1000);
+	private static final int roomSize = 4;
+	private static final List<Integer> roomCol = Arrays.asList(2, 4, 6, 8);
+	private static final Map<Integer, Character> roomChar = Map.of(0, 'A', 1, 'B', 2, 'C', 3, 'D');
+	private static final Map<Character, Integer> amphipodCost = Map.of('A', 1, 'B', 10, 'C', 100, 'D', 1000);
+	private Stack<Amphipod>[] rooms;
+	private Amphipod[] hallway;
 
 	public Burrow(String[] map) {
+		rooms = new Stack[4];
+		hallway = new Amphipod[11];
 		for (int i = 0; i < 4; i++) {
 			rooms[i] = new Stack<Amphipod>();
 		}
@@ -24,12 +24,17 @@ public class Burrow {
 			for (int i = 0; i < roomSize; i++) {
 				String row = map[1 + roomSize - i];
 				char c = row.charAt(roomCol.get(room) + 1);
-				rooms[room].push(new Amphipod(c, amphipodCost.get(c)));
+				rooms[room].push(new Amphipod(c));
 			}
 		}
 	}
 
-	private boolean reachedEnd(Stack<Amphipod>[] rooms) {
+	public Burrow(Stack<Amphipod>[] rooms, Amphipod[] hallway) {
+		this.rooms = rooms;
+		this.hallway = hallway;
+	}
+
+	public boolean finished() {
 		for (int room = 0; room < 4; room++) {
 			if (rooms[room].size() != roomSize) {
 				return false;
@@ -43,41 +48,37 @@ public class Burrow {
 		return true;
 	}
 
-	public long minPath() {
-		return minSort(0, hallway, rooms);
-	}
-
-	private long minSort(long cost, Amphipod[] hallway, Stack<Amphipod>[] rooms) {
-		System.out.println(debug++);
-		if (reachedEnd(rooms)) {
-			return cost;
-		} else {
-			Set<Long> costs = new HashSet<Long>();
-			for (int i = 0; i < hallway.length; i++) {
-				if (hallway[i] != null) {
-					Amphipod[] newHallway = copyHallway(hallway, i, null);
-					for (int roomNo = 0; roomNo < rooms.length; roomNo++) {
+	public Map<Burrow, Integer> neighbors() {
+		Map<Burrow, Integer> neighbors = new HashMap<Burrow, Integer>();
+		for (int i = 0; i < hallway.length; i++) {
+			if (hallway[i] != null) {
+				Amphipod[] newHallway = copyHallway(hallway, i, null);
+				for (int roomNo = 0; roomNo < rooms.length; roomNo++) {
+					if (possibleMove(i, (roomNo + 1) * 2)) {
 						if (hallway[i].canEnter(rooms[roomNo], roomChar.get(roomNo))) {
-							int steps = hallway[i].move(Math.abs(i - (roomNo + 1) * 2) + 2 - rooms[roomNo].size());
-							costs.add(minSort(steps, newHallway, copyRooms(rooms, roomNo, true, hallway[i])));
+							int steps = hallway[i]
+									.move(Math.abs(i - (roomNo + 1) * 2) + roomSize - rooms[roomNo].size());
+							Stack<Amphipod>[] newRooms = copyRooms(rooms, roomNo, true, hallway[i]);
+							neighbors.put(new Burrow(newRooms, newHallway), steps);
 						}
 					}
 				}
 			}
-			for (int roomNo = 0; roomNo < 4; roomNo++) {
-				if (!topShouldStay(rooms, roomNo)) {
-					Stack<Amphipod> room = rooms[roomNo];
-					if (!correctRoom(room, roomNo)) {
-						if (room.size() > 0) {
-							if (room.peek().moves == 2) {
-								for (int i = 0; i < hallway.length; i++) {
-									if (!roomCol.contains(i)) {
-										if (possibleMove((roomNo + 1) * 2, i, hallway)) {
-											int steps = room.peek()
-													.move(Math.abs(i - (roomNo + 1) * 2) + 3 - rooms[roomNo].size());
-											costs.add(minSort(steps, copyHallway(hallway, i, room.peek()),
-													copyRooms(rooms, roomNo, false, null)));
-										}
+		}
+		for (int roomNo = 0; roomNo < 4; roomNo++) {
+			if (!topShouldStay(rooms, roomNo)) {
+				Stack<Amphipod> room = rooms[roomNo];
+				if (!correctRoom(room, roomNo)) {
+					if (room.size() > 0) {
+						if (room.peek().moves == 2) {
+							for (int i = 0; i < hallway.length; i++) {
+								if (!roomCol.contains(i)) {
+									if (possibleMove((roomNo + 1) * 2, i)) {
+										int steps = room.peek().move(
+												Math.abs(i - (roomNo + 1) * 2) + roomSize + 1 - rooms[roomNo].size());
+										Amphipod[] newHallway = copyHallway(hallway, i, room.peek());
+										Stack<Amphipod>[] newRooms = copyRooms(rooms, roomNo, false, null);
+										neighbors.put(new Burrow(newRooms, newHallway), steps);
 									}
 								}
 							}
@@ -85,18 +86,8 @@ public class Burrow {
 					}
 				}
 			}
-			if (costs.isEmpty()) {
-				return Integer.MAX_VALUE;
-			} else {
-				long minCost = Integer.MAX_VALUE;
-				for (Long c : costs) {
-					if (c < minCost) {
-						minCost = c;
-					}
-				}
-				return minCost + cost;
-			}
 		}
+		return neighbors;
 	}
 
 	private boolean topShouldStay(Stack<Amphipod>[] rooms, int roomNo) {
@@ -136,24 +127,63 @@ public class Burrow {
 		return newHallway;
 	}
 
-	private boolean possibleMove(int from, int to, Amphipod[] hallway) {
-		for (int i = Math.min(from, to); i <= Math.max(from, to); i++) {
-			if (!(hallway[i] == null)) {
-				return false;
+	private boolean possibleMove(int from, int to) {
+		if (from < to) {
+			for (int i = from + 1; i <= to; i++) {
+				if (!(hallway[i] == null)) {
+					return false;
+				}
+			}
+		} else {
+			for (int i = to; i < from; i++) {
+				if (!(hallway[i] == null)) {
+					return false;
+				}
 			}
 		}
 		return true;
 	}
 
-	private class Amphipod {
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (Amphipod a : hallway) {
+			sb.append(a == null ? "[ ]" : "[" + a + "]");
+		}
+		sb.append('\n');
+		for (Stack<Amphipod> s : rooms) {
+			sb.append(s);
+		}
+		return sb.toString();
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other instanceof Burrow) {
+			Burrow o = (Burrow) other;
+			boolean hallwayEquals = Arrays.equals(hallway, o.hallway);
+			boolean roomsEquals = Arrays.equals(rooms, o.rooms);
+			return hallwayEquals && roomsEquals;
+		} else {
+			return false;
+		}
+	}
+
+	private static class Amphipod {
 		private char type;
 		private int cost;
 		private int moves;
 
-		private Amphipod(char type, int cost) {
+		private Amphipod(char type) {
 			this.type = type;
-			this.cost = cost;
+			cost = amphipodCost.get(type);
 			moves = 2;
+		}
+
+		private Amphipod(char type, int moves) {
+			this.type = type;
+			cost = amphipodCost.get(type);
+			this.moves = moves;
 		}
 
 		private Amphipod(Amphipod other) {
@@ -171,17 +201,30 @@ public class Burrow {
 		}
 
 		private boolean canEnter(Stack<Amphipod> room, char roomType) {
-			if (room.size() == 2 || type != roomType) {
+			if (room.size() == roomSize || type != roomType) {
 				return false;
-			} else if (room.size() == 1) {
-				return room.peek().type == type;
 			} else {
+				for (Amphipod a : room) {
+					if (a.type != type) {
+						return false;
+					}
+				}
 				return true;
 			}
 		}
 
 		public String toString() {
 			return Character.toString(type);
+		}
+
+		@Override
+		public boolean equals(Object other) {
+			if (other instanceof Amphipod) {
+				Amphipod o = (Amphipod) other;
+				return type == o.type && moves == o.moves;
+			} else {
+				return false;
+			}
 		}
 	}
 }

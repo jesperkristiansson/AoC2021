@@ -1,11 +1,11 @@
-package day2;
+package day02;
 
 import java.io.IOException;
 import helpers.Helpers;
 
-public class course {
+public class Main {
 	public static void main(String[] args) throws IOException{
-		String[] commands = Helpers.fileAsStrings("course.txt");
+		String[] commands = Helpers.fileAsStrings("src/day02/input.txt");
 		int hor = 0;
 		int depth = 0;
 		int aim = 0;

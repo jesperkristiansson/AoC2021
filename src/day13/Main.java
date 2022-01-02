@@ -12,9 +12,9 @@ import java.awt.Canvas;
 import java.awt.Point;
 import helpers.Helpers;
 
-public class Origami{
+public class Main{
 	public static void main(String[] args) throws IOException {
-		String[] input = Helpers.fileAsStrings("src/day13/harderExample.txt");
+		String[] input = Helpers.fileAsStrings("src/day13/input.txt");
 		Set<Point> points = new HashSet<Point>();
 		List<String> folds = new ArrayList<String>();
 		for (String s : input) {

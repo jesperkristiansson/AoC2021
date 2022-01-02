@@ -1,4 +1,4 @@
-package day9;
+package day09;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -6,10 +6,10 @@ import java.util.List;
 
 import helpers.Helpers;
 
-public class Smoke {
+public class Main {
 
 	public static void main(String[] args) throws IOException {
-		String[] text = Helpers.fileAsStrings("src/day9/input.txt");
+		String[] text = Helpers.fileAsStrings("src/day09/input.txt");
 		HeightMap map = new HeightMap(text);
 		int sum = 0;
 		for(int lowPoint : map.lowPoints()) {

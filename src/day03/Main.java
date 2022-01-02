@@ -1,4 +1,4 @@
-package day3;
+package day03;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,9 +7,9 @@ import java.util.Collections;
 import java.util.List;
 import helpers.Helpers;
 
-public class binary {
+public class Main {
 	public static void main(String[] args) throws IOException {
-		String[] nums = Helpers.fileAsStrings("binary.txt");
+		String[] nums = Helpers.fileAsStrings("src/day03/input.txt");
 		int oxy = rating(nums, 1, 0);
 		int co2 = rating(nums, 0, 1);
 		System.out.println(oxy * co2);

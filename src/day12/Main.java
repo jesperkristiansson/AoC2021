@@ -10,7 +10,7 @@ import java.util.Set;
 
 import helpers.Helpers;
 
-public class Pathing {
+public class Main {
 	public static void main(String[] args) throws IOException {
 		String[] input = Helpers.fileAsStrings("src/day12/input.txt");
 		Map<String, List<String>> connections = new HashMap<String, List<String>>();

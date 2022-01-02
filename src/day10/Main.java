@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Stack;
 import helpers.Helpers;
 
-public class Syntax {
+public class Main {
 
 	public static void main(String[] args) throws IOException {
 		String[] lines = Helpers.fileAsStrings("src/day10/input.txt");

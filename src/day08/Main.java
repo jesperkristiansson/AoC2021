@@ -1,12 +1,12 @@
-package day8;
+package day08;
 
 import java.io.IOException;
 import helpers.Helpers;
 
-public class Digits {
+public class Main {
 
 	public static void main(String[] args) throws IOException {
-		String[] lines = Helpers.fileAsStrings("src/day8/input.txt");
+		String[] lines = Helpers.fileAsStrings("src/day08/input.txt");
 		int sum = 0;
 		for(String line : lines){
 			String[] split = line.split("\\|");

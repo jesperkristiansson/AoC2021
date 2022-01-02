@@ -8,7 +8,7 @@ import java.util.List;
 
 import helpers.Helpers;
 
-public class Alternative {
+public class Main {
 	public static void main(String[] args) throws IOException {
 		String[] input = Helpers.fileAsStrings("src/day18/input.txt");
 		List<Integer> magnitudes = new ArrayList<Integer>();
@@ -68,7 +68,7 @@ public class Alternative {
 						}
 					}
 					int pairLength = pair.length() + 2;
-					int[] numbers = Arrays.stream(pair.split(",")).mapToInt(Integer::parseInt).toArray(); // works?
+					int[] numbers = Arrays.stream(pair.split(",")).mapToInt(Integer::parseInt).toArray();
 
 					String leftNum = "";
 					int leftNumPos = 0;

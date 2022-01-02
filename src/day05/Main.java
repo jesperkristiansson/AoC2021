@@ -1,4 +1,4 @@
-package day5;
+package day05;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -10,9 +10,9 @@ import helpers.Helpers;
 import java.awt.Point;
 import java.util.HashMap;
 
-public class Vents {
+public class Main {
 	public static void main(String[] args) throws IOException{
-		String[] vents = Helpers.fileAsStrings("vents.txt");
+		String[] vents = Helpers.fileAsStrings("src/day05/input.txt");
 		List<Line> lines = Arrays.stream(vents)
 					.map(s -> s.split(" "))
 					.map(arr -> dropMiddle(arr))

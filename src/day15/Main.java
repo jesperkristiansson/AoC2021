@@ -7,7 +7,7 @@ import java.util.Set;
 
 import helpers.Helpers;
 
-public class Alt {
+public class Main {
 
 	public static void main(String[] args) throws IOException {
 		String[] input = Helpers.fileAsStrings("src/day15/input.txt");

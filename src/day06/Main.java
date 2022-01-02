@@ -1,4 +1,4 @@
-package day6;
+package day06;
 
 import helpers.Helpers;
 import java.io.IOException;
@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class fish {
+public class Main {
 	public static void main(String[] args) throws IOException {
-		String[] nums = Helpers.fileAsStrings("src/day6/input.txt")[0].split(",");
+		String[] nums = Helpers.fileAsStrings("src/day06/input.txt")[0].split(",");
 		HashMap<LanternFish, Long> fishes = new HashMap<>();
 		for (String num : nums) {
 			LanternFish tempFish = new LanternFish(Integer.parseInt(num));

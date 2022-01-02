@@ -1,13 +1,13 @@
-package day4;
+package day04;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import helpers.Helpers;
 
-public class Bingo {
+public class Main {
 	public static void main(String[] args) throws IOException {
-		String[] rows = Helpers.fileAsStrings("bingo.txt");
+		String[] rows = Helpers.fileAsStrings("src/day04/input.txt");
 		String[] nums = rows[0].split(",");
 		ArrayList<Board> boards = new ArrayList<>();
 		for (int i = 2; i < rows.length; i++) {

@@ -1,4 +1,4 @@
-package day6;
+package day06;
 
 public class LanternFish {
 	private int numbers;

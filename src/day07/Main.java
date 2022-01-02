@@ -1,13 +1,13 @@
-package day7;
+package day07;
 
 import java.io.IOException;
 import java.util.Arrays;
 
 import helpers.Helpers;
 
-public class Crab {
+public class Main {
 	public static void main(String[] args) throws IOException{
-		String[] input = Helpers.fileAsStrings("src/day7/input.txt");
+		String[] input = Helpers.fileAsStrings("src/day07/input.txt");
 		int[] crabs = Arrays.stream(input[0].split(","))
 								.mapToInt(s -> Integer.parseInt(s))
 								.toArray();

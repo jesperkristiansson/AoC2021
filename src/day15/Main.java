@@ -9,7 +9,7 @@ import helpers.Helpers;
 
 public class Main {
 	public static void main(String[] args) throws IOException {
-		String[] input = Helpers.fileAsStrings("src/day15/example.txt");
+		String[] input = Helpers.fileAsStrings("src/day15/input.txt");
 		int height = input.length;
 		int width = input[0].length();
 		int[][] risk = new int[height][width];

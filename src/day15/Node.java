@@ -1,12 +1,24 @@
 package day15;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
 public class Node implements Comparable<Node>{
 	private int cost;
 	private int totalCost;
+	private Collection<Node> neighbors = new LinkedList<Node>();
 	
 	public Node(int cost, int totalCost){
 		this.cost = cost;
 		this.totalCost = totalCost;
+	}
+	
+	public void addNeighbor(Node other) {
+		neighbors.add(other);
+	}
+	
+	public Collection<Node> neighbors(){
+		return neighbors;
 	}
 	
 	public int cost() {

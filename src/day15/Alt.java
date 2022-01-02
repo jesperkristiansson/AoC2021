@@ -5,8 +5,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import helpers.Helpers;
 
@@ -20,8 +23,8 @@ public class Alt {
 	static int part2(String[] input) {
 		int height = input.length;
 		int width = input[0].length();
-		Map<Point, Node> unvisited = new HashMap<Point, Node>();
-		Point end = new Point(width * 5 - 1, height * 5 - 1);
+		Map<Point, Node> unvisited = new LinkedHashMap<Point, Node>();
+		Node end = null;
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				int baseCost = Character.getNumericValue(input[y].charAt(x));
@@ -30,7 +33,11 @@ public class Alt {
 						int newX = x + width * c;
 						int newY = y + height * r;
 						int newCost = newCost(baseCost, r, c);
-						unvisited.put(new Point(newX, newY), new Node(newCost, Integer.MAX_VALUE));
+						Node node = new Node(newCost, Integer.MAX_VALUE);
+						if(newX == width * 5 - 1 && newY == height * 5 - 1) {
+							end = node;
+						}
+						unvisited.put(new Point(newX, newY), node);
 					}
 				}
 			}
@@ -57,31 +64,33 @@ public class Alt {
 	 * y, cost, Integer.MAX_VALUE)); } } return costToEnd(unvisited, end); }
 	 */
 
-	static int costToEnd(Map<Point, Node> unvisited, Point end) {
-		Map<Point, Collection<Node>> neighbors = new HashMap<Point, Collection<Node>>();
-		for (Map.Entry<Point, Node> entry : unvisited.entrySet()) {
+	static int costToEnd(Map<Point, Node> map, Node end) {
+		Map<Node, Collection<Node>> neighbors = new HashMap<Node, Collection<Node>>();
+		Set<Node> unvisited = new HashSet<Node>();
+		for (Map.Entry<Point, Node> entry : map.entrySet()) {
+			unvisited.add(entry.getValue());
 			int x = entry.getKey().x;
 			int y = entry.getKey().y;
 			List<Node> neighs = new ArrayList<Node>();
-			neighs.add(unvisited.get(new Point(x+1, y)));
-			neighs.add(unvisited.get(new Point(x, y+1)));
-			neighs.add(unvisited.get(new Point(x-1, y)));
-			neighs.add(unvisited.get(new Point(x, y-1)));
+			neighs.add(map.get(new Point(x+1, y)));
+			neighs.add(map.get(new Point(x, y+1)));
+			neighs.add(map.get(new Point(x-1, y)));
+			neighs.add(map.get(new Point(x, y-1)));
 			List<Node> realNeighs = new ArrayList<Node>();
 			for(Node node : neighs) {
 				if(node != null) {
 					realNeighs.add(node);
 				}
 			}
-			neighbors.put(entry.getKey(), realNeighs);
+			neighbors.put(entry.getValue(), realNeighs);
 		}
 		while (!unvisited.isEmpty()) {
-			Point current = cheapest(unvisited);
+			Node current = cheapest(unvisited);
 			if (current.equals(end)) {
-				return unvisited.get(current).totalCost();
+				return current.totalCost();
 			}
 			for (Node pos : neighbors.get(current)) {
-				int newCost = unvisited.get(current).totalCost() + pos.cost();
+				int newCost = current.totalCost() + pos.cost();
 				if (newCost < pos.totalCost()) {
 					pos.setTotalCost(newCost);
 				}
@@ -91,14 +100,13 @@ public class Alt {
 		return -1;
 	}
 
-	static Point cheapest(Map<Point, Node> map) {
+	static Node cheapest(Iterable<Node> unvisited) {
 		int lowestCost = Integer.MAX_VALUE;
-		Point ret = null;
-		for (Map.Entry<Point, Node> entry : map.entrySet()) {
-			Node node = entry.getValue();
+		Node ret = null;
+		for (Node node : unvisited) {
 			if (node.totalCost() < lowestCost) {
 				lowestCost = node.totalCost();
-				ret = entry.getKey();
+				ret = node;
 			}
 		}
 		return ret;
